@@ -18,10 +18,13 @@ Currently, chunks are retrieved and ranked based on a hybrid approach, using sem
 ## Week 8 — Reproduction & solution planning
 
 **Reproduction commit link:** [link to commit documenting the reproduced issue]
-
+https://github.com/Phuc1Le/pathreview/commit/c5c9db5
+This first commit is to fix another issue, keyword_score is always 0, which was reproduced and fix-verified with tests/unit/test_hybrid.py
+https://github.com/Phuc1Le/pathreview/commit/81ea29f
+This is the reproduction of issue #34
 **Reproduction summary:**
 [1–2 sentences: How did you reproduce the issue? What did you observe?]
-
+I created a mock vector store with mock chunks, 2 of which are actual relevant chunk and keyword-stuffed chunk. Without the re ranker, the stuffed chunk score is higher than the actual relevant chunk.
 **PLAN.md link:** [link to PLAN.md in your fork]
 
 **Walkthrough video (recommended):** [link to your Loom video, ≤2 min — recommended, not graded]
