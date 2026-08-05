@@ -32,35 +32,63 @@ I created a mock vector store with mock chunks, 2 of which are actual relevant c
 **Blockers or open questions:**
 [Anything you're still uncertain about going into Week 9, or leave blank]
 
-53 failed, 378 passed, 2 warnings
 
 ## Week 9 — Solution building & PR submission
 
 ### Check-in 1 (mid-week)
 
 **Current progress:**
-[What have you implemented so far? Which sub-tasks from PLAN.md are done?]
+All 5 sub-tasks from PLAN.md are done: (1) implemented `Reranker` in `rag/retriever/reranker.py`
+using an LLM call to score candidate chunks, with defensive parsing and fallback to the
+existing blended score on any failure; (2) added `tests/unit/test_reranker.py` proving it in
+isolation, including that it corrects the exact keyword-stuffing bias `test_hybrid_keyword_bias.py`
+showcased; (3) widened `HybridRetriever`'s candidate pool (`candidate_multiplier`) and wired
+`Reranker` into `retrieve()` as an optional, opt-in dependency so existing behavior is unchanged
+when no reranker is configured; (4) added `tests/unit/test_hybrid_with_reranker.py` proving the
+fix end-to-end (retriever + reranker together flip the "stuffed" vs "relevant" ranking).
 
 **Next steps:**
-[What are you working on for the rest of the week?]
+Open a PR, get it reviewed, and consider tightening the LLM's structured-output enforcement
+(currently relies on prompt instructions + regex fallback, not the API's native JSON mode).
 
 **Blockers:**
-[Anything slowing you down? Or leave blank.]
+None currently.
 
 ---
 
 ### Check-in 2 (end of week)
 
-**PR link:** [link to your submitted pull request]
+**PR link:** (https://github.com/Phuc1Le/pathreview/pull/1)
 
-**Branch:** [the branch name you worked on, e.g. `fix/123-short-description`]
+**Branch:** feat/34-re-ranking-chunks
 
 **What you built:**
-[1–3 sentences summarizing what your fix does and how it works]
+An LLM-based re-ranking step (`rag/retriever/reranker.py`) that sits downstream of
+`HybridRetriever`'s vector/keyword blend. `HybridRetriever` now optionally accepts a `Reranker`
+and, when configured, widens its candidate pool before handing it to the LLM for final scoring
+and ordering, correcting cases where keyword repetition previously outranked genuinely relevant
+chunks. Falls back gracefully to the original blended-score order if the LLM call fails or
+returns unparseable output.
 
 **Tests added or updated:**
-[Which test files did you touch? What do they cover?]
+- `tests/unit/test_hybrid.py` — reproduces and confirms the fix for a separate, blocking bug
+  found along the way (`keyword_score` always 0.0, because `KeywordSearcher` was never indexed).
+- `tests/unit/test_hybrid_keyword_bias.py` — showcases issue #34 itself: without a reranker, a
+  keyword-stuffed but off-topic chunk outranks a genuinely relevant one.
+- `tests/unit/test_reranker.py` — unit tests for `Reranker` in isolation (mocked LLM client):
+  empty input, correcting the keyword-stuffing bias, `top_k` truncation, and three fallback
+  paths (LLM error, malformed output, partially-scored response).
+- `tests/unit/test_hybrid_with_reranker.py` — end-to-end: `HybridRetriever` + `Reranker` wired
+  together actually flip the ranking, plus a sanity check that the bias still reproduces without
+  a reranker configured (isolating that the fix, not some other change, is what flips it).
 
-**Self-review confirmation:** [ ] make check passes  [ ] make test-unit passes
+**Self-review confirmation:** [x] make check passes*  [x] make test-unit passes*
 
-**Draft PR feedback received from:** [name or Slack handle, or "none"]
+*Scoped to files touched for this issue: `ruff`/`black` clean on `rag/retriever/` and the four
+test files above; `mypy` unverifiable directly in this environment (blocked by a local
+Application Control policy) but passes via the pre-commit hook used for every commit.
+`test-unit` full-suite run: 386 passed, 53 failed — all 53 failures are pre-existing, in files
+unrelated to this issue (e.g. `test_pii_scrubber.py`, `test_review_service.py`,
+`test_resume_parser.py`); none of the 11 tests added/touched for issue #34 are among them.
+
+**Draft PR feedback received from:** none
