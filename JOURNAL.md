@@ -92,3 +92,42 @@ unrelated to this issue (e.g. `test_pii_scrubber.py`, `test_review_service.py`,
 `test_resume_parser.py`); none of the 11 tests added/touched for issue #34 are among them.
 
 **Draft PR feedback received from:** none
+
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [X] No — still awaiting review
+
+**Summary of feedback:**
+[What did reviewers comment on? Or note that no review came in.]
+No reviewer came in yet
+
+**How you responded:**
+[What changes did you make, or what did you reply? If no feedback,
+leave blank.]
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+[Be specific — what part of the process, codebase, or workflow
+surprised you?]
+There were issues that were non-related to mine, but I had to fix them in order for mine to work
+**What did you learn about working in a large codebase?**
+[What's different about contributing to someone else's production code
+vs. building your own project?]
+Every changes must be cocumented clearly, otherwise it'll be hard for other people to understand and navigate the codebase. Also I learn to make sure that my changes don't affect other components via testing.
+**How did AI tools help — and where did they fall short?**
+[Where was AI assistance most useful this module? Where did you need
+to go beyond what AI could give you?]
+AI's still great at writing the code. This time it even helped me point out relevant issues I needed to fix aside from mine.
+**What would you do differently if you started over?**
+[Issue selection, planning, implementation, or process — anything
+you'd change?]
+I guess not. I implemented a good new feature, tested it, and created a PR. Maybe I'd start sooner if I were to do it again. That way I'd have more time to write the code myself, instead of letting Claude do most of the work and check later on.
+
+**What are you most proud of from this module?**
+[One thing — it doesn't have to be the PR itself.]
+Reading and following the documentations to maintain a proper, professional workfloww
